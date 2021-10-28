@@ -45,6 +45,7 @@ int main()
 	int xloc;
     int yloc;
 
+	//TODO REMEMBER TO DELETE THIS
 	CBattleship* ship = new CBattleship(CBattleship::EShipType::BATTLESHIP, CBattleship::ERotationDirection::RIGHT, 1, 1);
 
 	//CBattleship ship2 = CBattleship(CBattleship::EShipType::DESTROYER, CBattleship::ERotationDirection::DOWN, 4, 2);
@@ -52,7 +53,7 @@ int main()
 
 	while (setUp)
 	{
-
+		//TODO Prompt player to create all of their ships, store in an array, then move on past the setup phase
 		int c = 0;
 		grid.PlaceShip(ship, false);
 		switch((c=_getch()))
@@ -75,7 +76,6 @@ int main()
 		default:
 			std::cout << "Def";
 		}
-		//grid.DrawGrid();
 		
 	}
 	
