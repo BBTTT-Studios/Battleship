@@ -43,6 +43,8 @@ void CGrid::DrawGrid()
 			case CGridPiece::EState::FRIENDLY:
 				std::cout << " F";
 				break;
+			default:
+				std::cout << "?";
 			}
 		}
 		
@@ -77,24 +79,44 @@ void CGrid::PlaceShip(CBattleship* ship, bool isEnemy)
 		switch (ship->GetRotation())
 		{
 		case CBattleship::ERotationDirection::RIGHT:
-			Piece = GetGridValue(ship->GetShipLocation().x, ship->GetShipLocation().y + i);
+			Piece = GetGridValue(ship->GetShipLocation().row, ship->GetShipLocation().col + i);
 			break;
 
 		case CBattleship::ERotationDirection::DOWN:
-			Piece = GetGridValue(ship->GetShipLocation().x - i, ship->GetShipLocation().y);
+			Piece = GetGridValue(ship->GetShipLocation().row - i, ship->GetShipLocation().col);
 			break;
 
 		case CBattleship::ERotationDirection::LEFT:
-			Piece = GetGridValue(ship->GetShipLocation().x, ship->GetShipLocation().y - i);
+			Piece = GetGridValue(ship->GetShipLocation().row, ship->GetShipLocation().col - i);
 			break;
 
 		case CBattleship::ERotationDirection::UP:
-			Piece = GetGridValue(ship->GetShipLocation().x + i, ship->GetShipLocation().y);
+			Piece = GetGridValue(ship->GetShipLocation().row + i, ship->GetShipLocation().col);
 			break;
 		}
 		Piece->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);
 		Piece->SetOwner(ship);
 		
 	}
+	DrawGrid();
+}
+
+void CGrid::MoveShip(CBattleship* ship, int row, int col)
+{
+	for (int r = 0; r < 10; r++)
+	{
+		for (int c = 0; c < 10; c++)
+		{
+			CGridPiece* piece = GetGridValue(r+1, c+1 );
+			if (piece->GetOwner() == ship)
+			{
+				piece->SetState(CGridPiece::EState::UNCHECKED);
+				piece->SetOwner(nullptr);
+			}
+		}
+	}
+	
+	//TODO Add validation to keep player inside the grid
+	ship->SetShipLocation(row, col);
 	DrawGrid();
 }

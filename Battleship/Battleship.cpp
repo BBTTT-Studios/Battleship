@@ -11,8 +11,15 @@
 using std::string; using std::vector;
 using std::cout; using std::endl;
 using std::cin; using std::numeric_limits;
+#include <conio.h>
+
+#define KEY_UP 72
+#define KEY_DOWN 80
+#define KEY_LEFT 75
+#define KEY_RIGHT 77
 
 bool continueGame = true;
+bool setUp = true;
 
 template<typename T>
 T& validateInput(T& val)
@@ -30,7 +37,7 @@ T& validateInput(T& val)
 	return val;
 }
 
-
+//TODO Two Grids; one to place our ships on, one to guess for enemy ships
 int main()
 {
     CGrid grid;
@@ -38,19 +45,46 @@ int main()
 	int xloc;
     int yloc;
 
+	CBattleship* ship = new CBattleship(CBattleship::EShipType::BATTLESHIP, CBattleship::ERotationDirection::RIGHT, 1, 1);
 
-	CBattleship ship = CBattleship(CBattleship::EShipType::BATTLESHIP, CBattleship::ERotationDirection::RIGHT, 1, 1);
-	grid.PlaceShip(&ship, true);
+	//CBattleship ship2 = CBattleship(CBattleship::EShipType::DESTROYER, CBattleship::ERotationDirection::DOWN, 4, 2);
+	//grid.PlaceShip(&ship2, true);
 
-	CBattleship ship2 = CBattleship(CBattleship::EShipType::DESTROYER, CBattleship::ERotationDirection::DOWN, 4, 2);
-	grid.PlaceShip(&ship2, true);
+	while (setUp)
+	{
 
+		int c = 0;
+		grid.PlaceShip(ship, false);
+		switch((c=_getch()))
+		{
+		case KEY_LEFT:
+			grid.MoveShip(ship, ship->GetShipLocation().row, ship->GetShipLocation().col-1);
+			break;
+		
+		case KEY_RIGHT:
+			grid.MoveShip(ship, ship->GetShipLocation().row, ship->GetShipLocation().col+1);
+			break;
+		
+		case KEY_UP:
+			grid.MoveShip(ship,ship->GetShipLocation().row-1, ship->GetShipLocation().col);
+			break;
+		
+		case KEY_DOWN:
+			grid.MoveShip(ship,ship->GetShipLocation().row+1, ship->GetShipLocation().col);
+			break;
+		default:
+			std::cout << "Def";
+		}
+		//grid.DrawGrid();
+		
+	}
+	
     while (continueGame)
     {
         std::cout << "Row: ";
 		validateInput(xlet);
-		if ((int)xlet >= 97) { xloc = (int)xlet - 96; }
-		else if ((int)xlet >= 65) { xloc = (int)xlet - 64; }
+		if (xlet >= 97) { xloc = xlet - 96; }
+		else if (xlet >= 65) { xloc = xlet - 64; }
 
         std::cout << "Col: ";
 		validateInput(yloc);

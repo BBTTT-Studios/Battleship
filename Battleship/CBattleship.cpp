@@ -33,3 +33,9 @@ CBattleship::~CBattleship()
 {
 
 }
+
+void CBattleship::SetShipLocation(int row, int col)
+{
+	ShipLocation.row = row;
+	ShipLocation.col = col;
+}
