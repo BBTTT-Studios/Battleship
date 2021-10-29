@@ -117,6 +117,8 @@ void CGrid::MoveShip(CBattleship* ship, int row, int col)
 	}
 	
 	//TODO Add validation to keep player inside the grid
+	//TODO Prevent ship placement on top of other ships
+	//TODO Prevent grid units from being overwritten and reset when a ship is moved over them
 	ship->SetShipLocation(row, col);
 	DrawGrid();
 }
