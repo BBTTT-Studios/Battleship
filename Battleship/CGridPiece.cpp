@@ -2,12 +2,12 @@
 
 CGridPiece::CGridPiece()
 {
-	State = EState::UNCHECKED;
-	Owner = nullptr;
+	State_m = EState::UNCHECKED;
+	Owner_m = nullptr;
 }
 
-CGridPiece::CGridPiece(CGridPiece::EState PieceState, CBattleship* PieceOwner)
+CGridPiece::CGridPiece(const EState pieceState, CBattleship* pieceOwner)
 {
-	State = PieceState;
-	Owner = PieceOwner;
+	State_m = pieceState;
+	Owner_m = pieceOwner;
 }

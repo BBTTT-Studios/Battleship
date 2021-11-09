@@ -1,6 +1,11 @@
 #pragma once
+
 #include "CBattleship.h"
 #include "CGridPiece.h"
+
+
+#include <vector>
+
 
 class CGrid
 {
@@ -10,23 +15,25 @@ public:
 
 	void DrawGrid();
 	void CheckLocation(const int &row, const int &col);
-	enum class HitState { Unchecked, Miss, Hit };
+	enum class HitState { UNCHECKED, MISS, HIT };
 
 private:
 	
-	CGridPiece gridArray[10][10];
+	CGridPiece GridArray_m[10][10];
 
 
 public:
-	CGridPiece* GetGridValue(int row, int col) 
-	{ 
-		CGridPiece* ptr;
-		ptr = &gridArray[row - 1][col - 1];
+	CGridPiece* GetGridValue(const int row, const int col) 
+	{
+		CGridPiece* ptr = &GridArray_m[row - 1][col - 1];
 		return ptr; 
 	}
 	
 
 	void PlaceShip(CBattleship* ship, bool isEnemy);
 	void MoveShip(CBattleship* ship, int row, int col);
+	bool CheckMovementValidity(int row, int col, CBattleship* ship);
+	void RotateShip(CBattleship* ship);
+	std::vector<CGridPiece*> GetShipPieces(const CBattleship* ship);
 };
 

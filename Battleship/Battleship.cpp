@@ -18,6 +18,7 @@ using std::cin; using std::numeric_limits;
 #define KEY_LEFT 75
 #define KEY_RIGHT 77
 #define KEY_ENTER 13
+#define KEY_R 114 
 
 //Global variable initialization
 bool continueGame = true;
@@ -30,7 +31,7 @@ void PhasePlacing();
 void PhaseGame();
 
 template<typename T>
-T& validateInput(T& val);
+T& ValidateInput(T& val);
 
 
 //TODO Two Grids; one to place our ships on, one to guess for enemy ships
@@ -56,12 +57,12 @@ void PhaseGame()
 	while (continueGame)
 	{
 		std::cout << "Row: ";
-		validateInput(xlet);
+		ValidateInput(xlet);
 		if (xlet >= 97) { xloc = xlet - 96; }
 		else if (xlet >= 65) { xloc = xlet - 64; }
 
 		std::cout << "Col: ";
-		validateInput(yloc);
+		ValidateInput(yloc);
 
 		grid.CheckLocation(xloc, yloc);
 
@@ -76,21 +77,26 @@ void PhasePlacing()
 	{
 		bool placing = true;
 
+
 		//TODO REMEMBER TO DELETE THE ALLOCATED MEMORY
-		shipList[i] = new CBattleship(CBattleship::EShipType::BATTLESHIP, CBattleship::ERotationDirection::RIGHT, 1, 1);
+		shipList[i] = new CBattleship(static_cast<CBattleship::EShipType>(i), CBattleship::ERotationDirection::RIGHT, 1, 1);
 		
 		while (placing)
 		{
 			grid.PlaceShip(shipList[i], false);
-			
-			int c, ex;
-			c = _getch();
+
+			const int c = _getch();
 			if (c && c != 224)
 			{
 				switch (c)
 				{
 				case KEY_ENTER:
 					placing = false;
+					break;
+
+				case KEY_R:
+					grid.RotateShip(shipList[i]);
+					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col);
 					break;
 
 				default:
@@ -101,22 +107,22 @@ void PhasePlacing()
 			
 			else
 			{
-				switch(ex = _getch())
+				switch(_getch())
 				{
 				case KEY_LEFT:
-					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().row, shipList[i]->GetShipLocation().col-1);
+					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col-1);
 					break;
 					
 				case KEY_RIGHT:
-					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().row, shipList[i]->GetShipLocation().col+1);
+					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col+1);
 					break;
 					
 				case KEY_UP:
-					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().row-1, shipList[i]->GetShipLocation().col);
+					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().Row-1, shipList[i]->GetShipLocation().Col);
 					break;
 					
 				case KEY_DOWN:
-					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().row+1, shipList[i]->GetShipLocation().col);
+					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().Row+1, shipList[i]->GetShipLocation().Col);
 					break;
 					
 				default:
@@ -124,21 +130,24 @@ void PhasePlacing()
 					break;
 				}
 			}
+			grid.DrawGrid();
 		}
 	}
 }
 
 template<typename T>
-T& validateInput(T& val)
+T& ValidateInput(T& val)
 {
 	while (true) {
-		if (cin >> val) {
-			break;
-		}
-		else {
+		if (!(cin >> val))
+		{
 			cout << "Enter a valid value!\n";
 			cin.clear();
 			cin.ignore(numeric_limits<std::streamsize>::max(), '\n');
+		}
+		else
+		{
+			break;
 		}
 	}
 	return val;

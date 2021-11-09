@@ -1,5 +1,12 @@
+
 #include "CGrid.h"
+#include <stdlib.h>
+#include <windows.h>
 #include <iostream>
+#include <string>
+#include <vector>
+#include "termcolor.hpp"
+
 
 CGrid::CGrid()
 {
@@ -16,35 +23,45 @@ CGrid::~CGrid()
 void CGrid::DrawGrid()
 {
 	system("CLS");
-	std::cout << "  1 2 3 4 5 6 7 8 9 10" << std::endl;
+	std::cout << termcolor::white << "  1 2 3 4 5 6 7 8 9 10" << termcolor::reset << std::endl;
 	for (int row = 0; row < 10; row++)
 	{
-		std::cout << char(65 + row);
+		std::cout << static_cast<char>(65 + row);
 		for (int col = 0; col < 10; col++)
 		{
-			switch (gridArray[row][col].GetState())
+			//GridArray_m[row][col].SetPosition(row, col);
+			switch (GridArray_m[row][col].GetState())
 			{
 			case CGridPiece::EState::UNCHECKED:
-				std::cout << " .";
+				std::cout << termcolor::bright_blue << " ." << termcolor::reset;
 				break;
 
 			case CGridPiece::EState::ENEMY:
-				std::cout << " .";
+				std::cout << termcolor::bright_blue << " ." << termcolor::reset;
 				break;
 
 			case CGridPiece::EState::HIT:
-				std::cout << " X";
+				std::cout << termcolor::red << " X" << termcolor::reset;
+				break;
+
+			case CGridPiece::EState::FRIENDLYHIT:
+				std::cout << termcolor::red << " X" << termcolor::reset;
 				break;
 
 			case CGridPiece::EState::EMPTY:
-				std::cout << " O";
+				std::cout << termcolor::yellow << " O" << termcolor::reset;
 				break;
 
 			case CGridPiece::EState::FRIENDLY:
-				std::cout << " F";
+				std::cout << termcolor::green << " F" << termcolor::reset;
 				break;
+
+			case CGridPiece::EState::OVERLAPPING:
+				std::cout << termcolor::italic << " F" << termcolor::reset;
+				break;
+				
 			default:
-				std::cout << "?";
+				std::cout << termcolor::bright_blue << "?" << termcolor::reset;
 			}
 		}
 		
@@ -56,58 +73,83 @@ void CGrid::DrawGrid()
 
 void CGrid::CheckLocation(const int &row, const int &col)
 {
-	CGridPiece& GridPiece = gridArray[row - 1][col - 1];
-	switch (GridPiece.GetState())
+	CGridPiece& gridPiece = GridArray_m[row - 1][col - 1];
+	switch (gridPiece.GetState())
 	{
 	case CGridPiece::EState::ENEMY:
-		GridPiece.SetState(CGridPiece::EState::HIT);
-		GridPiece.GetOwner()->ReduceHealth();
+		gridPiece.SetState(CGridPiece::EState::HIT);
+		gridPiece.GetOwner()->ReduceHealth();
 		break;
 
+	case CGridPiece::EState::FRIENDLY:
+		gridPiece.SetState(CGridPiece::EState::HIT);
+		gridPiece.GetOwner()->ReduceHealth();
+		break;
+		
 	default:
-		gridArray[row - 1][col - 1].SetState(CGridPiece::EState::EMPTY);
+		GridArray_m[row - 1][col - 1].SetState(CGridPiece::EState::EMPTY);
 		break;
 	}
 	DrawGrid();
 }
 
-void CGrid::PlaceShip(CBattleship* ship, bool isEnemy)
+void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 {
+		std::vector<CGridPiece*> pieces = GetShipPieces(ship);
+		for (int i = 0; i < pieces.size(); i++)
+		{
+			pieces[i]->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);
+			pieces[i]->SetOwner(ship);
+		}
+	
+	DrawGrid();
+}
+
+std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
+{
+	
+	std::vector<CGridPiece*> pieces;
 	for (int i = 0; i < ship->GetShipLength(); i++)
 	{
-		CGridPiece* Piece = nullptr;
+		
 		switch (ship->GetRotation())
 		{
 		case CBattleship::ERotationDirection::RIGHT:
-			Piece = GetGridValue(ship->GetShipLocation().row, ship->GetShipLocation().col + i);
+			pieces.push_back(GetGridValue(ship->GetShipLocation().Row, ship->GetShipLocation().Col + i));
 			break;
 
 		case CBattleship::ERotationDirection::DOWN:
-			Piece = GetGridValue(ship->GetShipLocation().row - i, ship->GetShipLocation().col);
+			pieces.push_back(GetGridValue(ship->GetShipLocation().Row + i, ship->GetShipLocation().Col));
 			break;
 
 		case CBattleship::ERotationDirection::LEFT:
-			Piece = GetGridValue(ship->GetShipLocation().row, ship->GetShipLocation().col - i);
+			pieces.push_back(GetGridValue(ship->GetShipLocation().Row, ship->GetShipLocation().Col - i));
 			break;
 
 		case CBattleship::ERotationDirection::UP:
-			Piece = GetGridValue(ship->GetShipLocation().row + i, ship->GetShipLocation().col);
+			pieces.push_back(GetGridValue(ship->GetShipLocation().Row - i, ship->GetShipLocation().Col));
 			break;
 		}
-		Piece->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);
-		Piece->SetOwner(ship);
-		
 	}
-	DrawGrid();
+	return pieces;
 }
 
-void CGrid::MoveShip(CBattleship* ship, int row, int col)
+
+void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 {
+
+	bool canMove = false;
+
+	const std::vector<CGridPiece*>& shipParts = GetShipPieces(ship);
+
+	
 	for (int r = 0; r < 10; r++)
 	{
 		for (int c = 0; c < 10; c++)
 		{
 			CGridPiece* piece = GetGridValue(r+1, c+1 );
+
+			
 			if (piece->GetOwner() == ship)
 			{
 				piece->SetState(CGridPiece::EState::UNCHECKED);
@@ -116,9 +158,79 @@ void CGrid::MoveShip(CBattleship* ship, int row, int col)
 		}
 	}
 	
-	//TODO Add validation to keep player inside the grid
-	//TODO Prevent ship placement on top of other ships
-	//TODO Prevent grid units from being overwritten and reset when a ship is moved over them
-	ship->SetShipLocation(row, col);
+	if (CheckMovementValidity(row, col, ship))
+	{
+		ship->SetShipLocation(row, col);
+	}
+	
 	DrawGrid();
+}
+
+bool CGrid::CheckMovementValidity(int row, int col, CBattleship* ship)
+{
+	bool canMove = false;
+	int colTest = 0;
+	int rowTest = 0;
+	int len = ship->GetShipLength();
+	for (int i = 0; i < len; i++)
+	{
+		
+		switch (ship->GetRotation())
+		{
+		case CBattleship::ERotationDirection::RIGHT:
+			colTest = col + i;
+			rowTest = row;
+			break;
+
+		case CBattleship::ERotationDirection::DOWN:
+			rowTest = row + i;
+			colTest = col;
+			break;
+
+		case CBattleship::ERotationDirection::LEFT:
+			colTest = col - i;
+			rowTest = row;
+			break;
+
+		case CBattleship::ERotationDirection::UP:
+			rowTest = row - i;
+			colTest = col;
+			break;
+		}
+		if ((colTest > 0 and colTest < 11) and (rowTest > 0 and rowTest < 11))
+		{
+			if (GetGridValue(rowTest, colTest)->GetOwner() == nullptr or GetGridValue(rowTest, colTest)->GetOwner() == ship )
+			{
+				canMove = true;
+			}
+			else
+			{
+				canMove = false;
+
+				break;
+			}
+		}
+		else
+		{
+			canMove = false;
+			break;
+		}
+	}
+	return canMove;
+}
+
+void CGrid::RotateShip(CBattleship* ship)
+{
+	CBattleship::ERotationDirection OldRotation = ship->GetRotation();
+	switch (ship->GetRotation())
+	{
+	case CBattleship::ERotationDirection::RIGHT: ship->SetShipRotation(CBattleship::ERotationDirection::DOWN); break;
+	case CBattleship::ERotationDirection::DOWN: ship->SetShipRotation(CBattleship::ERotationDirection::LEFT); break;
+	case CBattleship::ERotationDirection::LEFT: ship->SetShipRotation(CBattleship::ERotationDirection::UP); break;
+	case CBattleship::ERotationDirection::UP: ship->SetShipRotation(CBattleship::ERotationDirection::RIGHT); break;
+	}
+	if (!CheckMovementValidity(ship->GetShipLocation().Row, ship->GetShipLocation().Col, ship))
+	{
+		ship->SetShipRotation(OldRotation);
+	}
 }

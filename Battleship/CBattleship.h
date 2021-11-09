@@ -1,32 +1,35 @@
 #pragma once
+
 class CBattleship
 {
 public:
 	enum class ERotationDirection { LEFT, RIGHT, UP, DOWN };
-	enum class EShipType { BATTLESHIP, CRUISER, SUBMARINE, DESTROYER, CARRIER };
-	struct Coords { int row; int col; };
+	enum class EShipType { DESTROYER, CRUISER, SUBMARINE, BATTLESHIP, CARRIER };
+	struct Coords { int Row; int Col; };
 
-	CBattleship(EShipType, ERotationDirection, int x, int y);
+	CBattleship(EShipType, ERotationDirection, int row, int col);
 	~CBattleship();
 
 	
 
 
 private:
-	int ShipLength;
-	int ShipHealth;
-	Coords ShipLocation;
-	EShipType ShipType;
-	ERotationDirection ShipRotation;
+	int ShipLength_m;
+	int ShipHealth_m;
+	Coords ShipLocation_m;
+	EShipType ShipType_m;
+	ERotationDirection ShipRotation_m;
+	//bool CheckInBounds(int row, int col);
+	//bool CheckCollision(int row, int col);
 
 public:
-	int GetShipLength() { return ShipLength; }
-	EShipType GetShipType() { return ShipType; }
-	ERotationDirection GetRotation() { return ShipRotation; }
-	Coords GetShipLocation() { return ShipLocation;  }
+	int GetShipLength() const { return ShipLength_m; }
+	EShipType GetShipType() const { return ShipType_m; }
+	ERotationDirection GetRotation() const { return ShipRotation_m; }
+	Coords GetShipLocation() const { return ShipLocation_m;  }
 
 	void SetShipLocation(int row, int col);
-	void SetShipRotation(EShipType Direction);
-	void ReduceHealth() { ShipHealth--; }
+	void SetShipRotation(ERotationDirection direction) { ShipRotation_m = direction; }
+	void ReduceHealth() { ShipHealth_m--; }
 };
 

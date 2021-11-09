@@ -4,18 +4,31 @@
 class CGridPiece
 {
 public:
-	enum class EState { UNCHECKED, FRIENDLY, FRIENDLYHIT, HIT, EMPTY, ENEMY };
+	enum class EState { UNCHECKED, FRIENDLY, FRIENDLYHIT, HIT, EMPTY, ENEMY, OVERLAPPING };
 	CGridPiece();
-	CGridPiece(CGridPiece::EState PieceState, CBattleship* PieceOwner);
+	CGridPiece(EState pieceState, CBattleship* pieceOwner);
+
+	struct Coords
+	{
+		int Row;
+		int Col;
+	};
 
 private:
-	EState State;
-	CBattleship* Owner;
+	EState State_m;
+	EState OldState_m;
+	CBattleship* OldOwner_m;
+	CBattleship* Owner_m;
+	//Coords Position_m;
+	
 public:
-	EState GetState() { return State; }
-	CBattleship* GetOwner() { return Owner; }
+	EState GetState() const { return State_m; }
+	CBattleship* GetOwner() const { return Owner_m; }
 
-	void SetState(EState PieceState) { State = PieceState;  }
-	void SetOwner(CBattleship* PieceOwner) { Owner = PieceOwner; }
+	void SetState(const EState pieceState) { OldState_m = State_m; State_m = pieceState;  }
+	void RevertState() { State_m = OldState_m; }
+	void SetOwner(CBattleship* pieceOwner) { OldOwner_m = Owner_m; Owner_m = pieceOwner; }
+	//Coords GetPosition() const { return Position_m; }
+	//void SetPosition(int row, int col) { Position_m.Col = col; Position_m.Row = row; }
 };
 

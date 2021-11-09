@@ -1,32 +1,35 @@
 #include "CBattleship.h"
 
-CBattleship::CBattleship(EShipType Type = EShipType::BATTLESHIP, ERotationDirection Rotation = ERotationDirection::RIGHT, int row = 1, int col = 1)
-{
-	ShipRotation = Rotation;
-	ShipType = Type;
-	ShipLocation = Coords{ row, col };
 
-	switch (ShipType)
+
+
+CBattleship::CBattleship(const EShipType type = EShipType::BATTLESHIP, const ERotationDirection rotation = ERotationDirection::RIGHT, const int row = 1, const int col = 1):
+	ShipLength_m(0)
+{
+	ShipRotation_m = rotation;
+	ShipType_m = type;
+	ShipLocation_m = Coords{row, col};
+
+	switch (ShipType_m)
 	{
 	case EShipType::CRUISER:
-		ShipLength = 3;
+		ShipLength_m = 3;
 		break;
 	case EShipType::BATTLESHIP:
-		ShipLength = 4;
+		ShipLength_m = 4;
 		break;
 	case EShipType::SUBMARINE:
-		ShipLength = 4;
+		ShipLength_m = 4;
 		break;
 	case EShipType::DESTROYER:
-		ShipLength = 2;
+		ShipLength_m = 2;
 		break;
 	case EShipType::CARRIER:
-		ShipLength = 5;
+		ShipLength_m = 5;
 		break;
 	}
 
-	ShipHealth = ShipLength;
-
+	ShipHealth_m = ShipLength_m;
 }
 
 CBattleship::~CBattleship()
@@ -34,8 +37,13 @@ CBattleship::~CBattleship()
 
 }
 
-void CBattleship::SetShipLocation(int row, int col)
+
+void CBattleship::SetShipLocation(const int row, const int col)
 {
-	ShipLocation.row = row;
-	ShipLocation.col = col;
+
+		ShipLocation_m.Col = col;
+		ShipLocation_m.Row = row;
+
 }
+
+
