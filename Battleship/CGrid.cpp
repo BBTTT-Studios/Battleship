@@ -15,10 +15,14 @@ CGrid::CGrid()
 
 }
 
+
+
 CGrid::~CGrid()
 {
 
 }
+
+
 
 void CGrid::DrawGrid()
 {
@@ -71,6 +75,8 @@ void CGrid::DrawGrid()
 	std::cout << std::endl;
 }
 
+
+
 void CGrid::CheckLocation(const int &row, const int &col)
 {
 	CGridPiece& gridPiece = GridArray_m[row - 1][col - 1];
@@ -93,6 +99,8 @@ void CGrid::CheckLocation(const int &row, const int &col)
 	DrawGrid();
 }
 
+
+
 void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 {
 		std::vector<CGridPiece*> pieces = GetShipPieces(ship);
@@ -104,6 +112,8 @@ void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 	
 	DrawGrid();
 }
+
+
 
 std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
 {
@@ -133,6 +143,7 @@ std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
 	}
 	return pieces;
 }
+
 
 
 void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
@@ -165,6 +176,8 @@ void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 	
 	DrawGrid();
 }
+
+
 
 bool CGrid::CheckMovementValidity(int row, int col, CBattleship* ship)
 {
@@ -218,6 +231,8 @@ bool CGrid::CheckMovementValidity(int row, int col, CBattleship* ship)
 	}
 	return canMove;
 }
+
+
 
 void CGrid::RotateShip(CBattleship* ship)
 {

@@ -28,7 +28,6 @@ public:
 	void SetState(const EState pieceState) { OldState_m = State_m; State_m = pieceState;  }
 	void RevertState() { State_m = OldState_m; }
 	void SetOwner(CBattleship* pieceOwner) { OldOwner_m = Owner_m; Owner_m = pieceOwner; }
-	//Coords GetPosition() const { return Position_m; }
-	//void SetPosition(int row, int col) { Position_m.Col = col; Position_m.Row = row; }
+
 };
 
