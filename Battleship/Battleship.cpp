@@ -35,6 +35,13 @@ T& ValidateInput(T& val);
 
 
 //TODO Two Grids; one to place our ships on, one to guess for enemy ships
+
+//TODO Detect overlapping ships instead of blocking movement, and only block placement
+//TODO Implement a game class to handle grid creation and game management, and abstract away code from main?
+//TODO Implement game flow and 'AI' or Player 2
+//
+
+
 //MAIN GAME FUNCTION
 int main()
 {
@@ -65,6 +72,7 @@ void PhaseGame()
 		ValidateInput(yloc);
 
 		grid.CheckLocation(xloc, yloc);
+		grid.DrawGrid();
 
 	}
 	
@@ -84,7 +92,7 @@ void PhasePlacing()
 		while (placing)
 		{
 			grid.PlaceShip(shipList[i], false);
-
+			grid.DrawGrid();
 			const int c = _getch();
 			if (c && c != 224)
 			{

@@ -96,7 +96,7 @@ void CGrid::CheckLocation(const int &row, const int &col)
 		GridArray_m[row - 1][col - 1].SetState(CGridPiece::EState::EMPTY);
 		break;
 	}
-	DrawGrid();
+	//DrawGrid();
 }
 
 
@@ -110,7 +110,7 @@ void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 			pieces[i]->SetOwner(ship);
 		}
 	
-	DrawGrid();
+	//DrawGrid();
 }
 
 
@@ -174,7 +174,7 @@ void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 		ship->SetShipLocation(row, col);
 	}
 	
-	DrawGrid();
+	//DrawGrid();
 }
 
 
