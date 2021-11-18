@@ -1,3 +1,17 @@
+/***********************************************************************
+Bachelor of Software Engineering
+Media Design School
+Auckland
+New Zealand
+
+(c) 2021 Media Design School
+
+File Name : CBattleship.h
+Description : Holds information about each ship in the game
+Author : Vincent Gray
+Mail : Vincent.Gray@mds.ac.nz
+**************************************************************************/
+
 #pragma once
 
 class CBattleship
@@ -8,12 +22,13 @@ public:
 	struct Coords { int Row; int Col; };
 
 	CBattleship(EShipType, ERotationDirection, int row, int col);
+	CBattleship(const CBattleship &old);
 	~CBattleship();
 
 	
 
 
-private:
+private:	// TF: Access Specifier
 	int ShipLength_m;
 	int ShipHealth_m;
 	Coords ShipLocation_m;

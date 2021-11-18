@@ -1,3 +1,17 @@
+/***********************************************************************
+Bachelor of Software Engineering
+Media Design School
+Auckland
+New Zealand
+
+(c) 2021 Media Design School
+
+File Name : CGridPiece.cpp
+Description : Implementation of CGridPiece.h
+Author : Vincent Gray
+Mail : Vincent.Gray@mds.ac.nz
+**************************************************************************/
+
 #include "CGridPiece.h"
 
 CGridPiece::CGridPiece()

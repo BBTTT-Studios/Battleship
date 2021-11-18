@@ -1,3 +1,17 @@
+/***********************************************************************
+Bachelor of Software Engineering
+Media Design School
+Auckland
+New Zealand
+
+(c) 2021 Media Design School
+
+File Name : CGrid.h
+Description : Represents the game board. Handles rendering, queries and player movement
+Author : Vincent Gray
+Mail : Vincent.Gray@mds.ac.nz
+**************************************************************************/
+
 #pragma once
 
 #include "CBattleship.h"
@@ -7,7 +21,7 @@
 #include <vector>
 
 
-class CGrid
+class CGrid		// TF: Class
 {
 public:
 	CGrid();
@@ -22,7 +36,7 @@ public:
 	
 private:
 	//This is the game board array. All piece info is stored here
-	CGridPiece GridArray_m[10][10];
+	CGridPiece GridArray_m[10][10];		// TF: Array
 
 
 public:
@@ -30,7 +44,7 @@ public:
 	//Returns the grid piece at the specified coordinated
 	CGridPiece* GetGridValue(const int row, const int col) 
 	{
-		CGridPiece* ptr = &GridArray_m[row - 1][col - 1];
+		CGridPiece* ptr = &GridArray_m[row - 1][col - 1];	// TF: Pointer Initialized
 		return ptr; 
 	}
 

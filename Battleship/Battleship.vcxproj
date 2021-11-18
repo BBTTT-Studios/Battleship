@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Battleship.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="CBattleship.cpp" />
     <ClCompile Include="CGameManager.cpp" />
     <ClCompile Include="CGrid.cpp" />

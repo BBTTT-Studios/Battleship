@@ -1,3 +1,18 @@
+/***********************************************************************
+Bachelor of Software Engineering
+Media Design School
+Auckland
+New Zealand
+
+(c) 2021 Media Design School
+
+File Name : CGridPiece.h
+Description : Class that holds information about each position on the game board
+Author : Vincent Gray
+Mail : Vincent.Gray@mds.ac.nz
+**************************************************************************/
+
+
 #pragma once
 #include "CBattleship.h"
 

@@ -1,4 +1,18 @@
 
+/***********************************************************************
+Bachelor of Software Engineering
+Media Design School
+Auckland
+New Zealand
+
+(c) 2021 Media Design School
+
+File Name : CGrid.cpp
+Description : Implementation of CGrid.h
+Author : Vincent Gray
+Mail : Vincent.Gray@mds.ac.nz
+**************************************************************************/
+
 #include "CGrid.h"
 #include <stdlib.h>
 #include <windows.h>
@@ -26,7 +40,7 @@ void CGrid::DrawGrid()
 {
 	
 	std::cout << termcolor::white << "  1 2 3 4 5 6 7 8 9 10" << termcolor::reset << std::endl;
-	for (int row = 0; row < 10; row++)
+	for (int row = 0; row < 10; row++)		// TF: Iteration Structure
 	{
 		std::cout << static_cast<char>(65 + row);
 		for (int col = 0; col < 10; col++)
@@ -98,13 +112,13 @@ void CGrid::CheckLocation(const int &row, const int &col)
 }
 
 
-
+//TODO Disallow ships to be placed on top of other ships
 void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 {
 		std::vector<CGridPiece*> pieces = GetShipPieces(ship);
 		for (int i = 0; i < pieces.size(); i++)
 		{
-			pieces[i]->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);
+			pieces[i]->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);		// TF: Pointer Dereferenced
 			pieces[i]->SetOwner(ship);
 		}
 	
@@ -116,10 +130,10 @@ void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
 	bool placed = false;
 	while (!placed)
 	{
-		srand(time(NULL));
+		srand(static_cast<unsigned>(time(NULL)));
 		CBattleship::ERotationDirection Direction = static_cast<CBattleship::ERotationDirection>(rand() % 4);
 		ship->SetShipRotation(Direction);
-		int row = rand() % 10;
+		int row = rand() % 10;		// TF: Pseudo Random Number
 		int col = rand() % 10;
 		
 		placed = MoveShip(ship, row, col);
@@ -130,7 +144,7 @@ void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
 
 void CGrid::GuessRandom()
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned>(time(NULL)));
 	int row = rand() % 10;
 	int col = rand() % 10;
 	CheckLocation(row, col);
@@ -167,7 +181,7 @@ std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
 }
 
 
-
+//TODO Pass over ships instead of being blocked by them
 bool CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 {
 
@@ -183,7 +197,7 @@ bool CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 			CGridPiece* piece = GetGridValue(r+1, c+1 );
 
 			
-			if (piece->GetOwner() == ship)
+			if (piece->GetOwner() == ship)		// TF: Conditional Statement
 			{
 				piece->SetState(CGridPiece::EState::UNCHECKED);
 				piece->SetOwner(nullptr);
