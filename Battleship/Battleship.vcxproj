@@ -141,11 +141,13 @@
   <ItemGroup>
     <ClCompile Include="Battleship.cpp" />
     <ClCompile Include="CBattleship.cpp" />
+    <ClCompile Include="CGameManager.cpp" />
     <ClCompile Include="CGrid.cpp" />
     <ClCompile Include="CGridPiece.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CBattleship.h" />
+    <ClInclude Include="CGameManager.h" />
     <ClInclude Include="CGrid.h" />
     <ClInclude Include="CGridPiece.h" />
   </ItemGroup>

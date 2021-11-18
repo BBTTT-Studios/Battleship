@@ -1,12 +1,20 @@
 // Battleship.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
+#pragma once
+
+#define NOMINMAX
+
 #include "CGrid.h"
 #include <sstream>
 #include <iostream>
 #include <limits>
 #include <vector>
 #include <conio.h>
+#include <Windows.h>
 #include "CBattleship.h"
+#include "CGameManager.h"
+#include "termcolor.hpp"
+
 
 using std::string; using std::vector;
 using std::cout; using std::endl;
@@ -20,15 +28,22 @@ using std::cin; using std::numeric_limits;
 #define KEY_ENTER 13
 #define KEY_R 114 
 
+
+
 //Global variable initialization
+CGameManager GameManager;
+
 bool continueGame = true;
 bool setUp = true;
-CGrid grid;
-CBattleship *shipList[10];
+CGrid p1Grid;
+CGrid p2Grid;
+CBattleship *p1ShipList[5];
+CBattleship *p2ShipList[5];
 
 //Function Declarations
 void PhasePlacing();
 void PhaseGame();
+void DrawGrids();
 
 template<typename T>
 T& ValidateInput(T& val);
@@ -63,6 +78,7 @@ void PhaseGame()
 	
 	while (continueGame)
 	{
+		DrawGrids();
 		std::cout << "Row: ";
 		ValidateInput(xlet);
 		if (xlet >= 97) { xloc = xlet - 96; }
@@ -71,8 +87,14 @@ void PhaseGame()
 		std::cout << "Col: ";
 		ValidateInput(yloc);
 
-		grid.CheckLocation(xloc, yloc);
-		grid.DrawGrid();
+		p2Grid.CheckLocation(xloc, yloc);
+
+		DrawGrids();
+		cout << termcolor::red << "Enemy is thinking..." << termcolor::reset << endl;
+		Sleep(1000);
+		srand(time(NULL));
+		p1Grid.GuessRandom();
+		DrawGrids();
 
 	}
 	
@@ -87,12 +109,17 @@ void PhasePlacing()
 
 
 		//TODO REMEMBER TO DELETE THE ALLOCATED MEMORY
-		shipList[i] = new CBattleship(static_cast<CBattleship::EShipType>(i), CBattleship::ERotationDirection::RIGHT, 1, 1);
+		p1ShipList[i] = new CBattleship(static_cast<CBattleship::EShipType>(i), CBattleship::ERotationDirection::RIGHT, 1, 1);
+		
+		p2ShipList[i] = new CBattleship(static_cast<CBattleship::EShipType>(i), CBattleship::ERotationDirection::RIGHT, 5, 5);
+		
 		
 		while (placing)
 		{
-			grid.PlaceShip(shipList[i], false);
-			grid.DrawGrid();
+			p1Grid.PlaceShip(p1ShipList[i], false);
+			
+			DrawGrids();
+			std::cout << "Move: Arrow Keys   |   Rotate: R   |   Confirm: Enter" << endl;
 			const int c = _getch();
 			if (c && c != 224)
 			{
@@ -103,8 +130,8 @@ void PhasePlacing()
 					break;
 
 				case KEY_R:
-					grid.RotateShip(shipList[i]);
-					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col);
+					p1Grid.RotateShip(p1ShipList[i]);
+					p1Grid.MoveShip(p1ShipList[i], p1ShipList[i]->GetShipLocation().Row, p1ShipList[i]->GetShipLocation().Col);
 					break;
 
 				default:
@@ -118,19 +145,19 @@ void PhasePlacing()
 				switch(_getch())
 				{
 				case KEY_LEFT:
-					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col-1);
+					p1Grid.MoveShip(p1ShipList[i], p1ShipList[i]->GetShipLocation().Row, p1ShipList[i]->GetShipLocation().Col-1);
 					break;
 					
 				case KEY_RIGHT:
-					grid.MoveShip(shipList[i], shipList[i]->GetShipLocation().Row, shipList[i]->GetShipLocation().Col+1);
+					p1Grid.MoveShip(p1ShipList[i], p1ShipList[i]->GetShipLocation().Row, p1ShipList[i]->GetShipLocation().Col+1);
 					break;
 					
 				case KEY_UP:
-					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().Row-1, shipList[i]->GetShipLocation().Col);
+					p1Grid.MoveShip(p1ShipList[i],p1ShipList[i]->GetShipLocation().Row-1, p1ShipList[i]->GetShipLocation().Col);
 					break;
 					
 				case KEY_DOWN:
-					grid.MoveShip(shipList[i],shipList[i]->GetShipLocation().Row+1, shipList[i]->GetShipLocation().Col);
+					p1Grid.MoveShip(p1ShipList[i],p1ShipList[i]->GetShipLocation().Row+1, p1ShipList[i]->GetShipLocation().Col);
 					break;
 					
 				default:
@@ -138,13 +165,18 @@ void PhasePlacing()
 					break;
 				}
 			}
-			grid.DrawGrid();
+
+			
+			DrawGrids();
 		}
+		std::cout << endl << termcolor::red << "Enemy is thinking..." << termcolor::reset << endl;
+		Sleep((100));
+		p2Grid.PlaceShipRandom(p2ShipList[i], true);
 	}
 }
 
 template<typename T>
-T& ValidateInput(T& val)
+static T& ValidateInput(T& val)
 {
 	while (true) {
 		if (!(cin >> val))
@@ -160,3 +192,16 @@ T& ValidateInput(T& val)
 	}
 	return val;
 }
+
+
+void DrawGrids()
+{
+	system("cls");
+	cout << termcolor::yellow << "Your Ships:" << termcolor::reset << endl << endl;
+	p1Grid.DrawGrid();
+
+	cout << termcolor::yellow << "Enemy Waters:" << termcolor::reset << endl << endl;
+	p2Grid.DrawGrid();
+	
+}
+

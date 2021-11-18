@@ -10,8 +10,8 @@
 
 CGrid::CGrid()
 {
-	std::cout << "Grid Initialized" << std::endl;
-	DrawGrid();
+	//std::cout << "Grid Initialized" << std::endl;
+	//DrawGrid();
 
 }
 
@@ -22,11 +22,9 @@ CGrid::~CGrid()
 
 }
 
-
-
 void CGrid::DrawGrid()
 {
-	system("CLS");
+	
 	std::cout << termcolor::white << "  1 2 3 4 5 6 7 8 9 10" << termcolor::reset << std::endl;
 	for (int row = 0; row < 10; row++)
 	{
@@ -113,6 +111,30 @@ void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 	//DrawGrid();
 }
 
+void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
+{
+	bool placed = false;
+	while (!placed)
+	{
+		srand(time(NULL));
+		CBattleship::ERotationDirection Direction = static_cast<CBattleship::ERotationDirection>(rand() % 4);
+		ship->SetShipRotation(Direction);
+		int row = rand() % 10;
+		int col = rand() % 10;
+		
+		placed = MoveShip(ship, row, col);
+	}
+	PlaceShip(ship, isEnemy);
+	
+}
+
+void CGrid::GuessRandom()
+{
+	srand(time(NULL));
+	int row = rand() % 10;
+	int col = rand() % 10;
+	CheckLocation(row, col);
+}
 
 
 std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
@@ -146,7 +168,7 @@ std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
 
 
 
-void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
+bool CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 {
 
 	bool canMove = false;
@@ -172,7 +194,9 @@ void CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 	if (CheckMovementValidity(row, col, ship))
 	{
 		ship->SetShipLocation(row, col);
+		return true;
 	}
+	return false;
 	
 	//DrawGrid();
 }
