@@ -62,13 +62,13 @@ int main()
 		{
 		case 1:
 			{
-				CGameManager SPGameManager = CGameManager(true);
+				CGameManager GameManager(true);
 			}
 			break;
 
 		case 2:
 			{
-				CGameManager MPGameManager = CGameManager(false);
+				CGameManager GameManager(false);
 			}
 			break;
 

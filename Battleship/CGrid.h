@@ -31,7 +31,7 @@ public:
 	void DrawGrid();
 
 	// Queries a position on the grid and changes the state if it hits an enemy/friend. Then refreshes the grid
-	void CheckLocation(const int &row, const int &col);
+	bool CheckLocation(const int &row, const int &col);
 
 	
 private:
@@ -53,7 +53,7 @@ public:
 
 	void PlaceShipRandom(CBattleship* ship, bool isEnemy);
 
-	void GuessRandom();
+	bool GuessRandom();
 	
 	//Move a ship to a specified location, checking movement validity, and then running PlaceShip
 	bool MoveShip(CBattleship* ship, int row, int col);

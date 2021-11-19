@@ -34,8 +34,7 @@ private:	// TF: Access Specifier
 	Coords ShipLocation_m;
 	EShipType ShipType_m;
 	ERotationDirection ShipRotation_m;
-	//bool CheckInBounds(int row, int col);
-	//bool CheckCollision(int row, int col);
+
 
 public:
 	int GetShipLength() const { return ShipLength_m; }
@@ -44,7 +43,7 @@ public:
 	Coords GetShipLocation() const { return ShipLocation_m;  }
 
 	void SetShipLocation(int row, int col);
-	void SetShipRotation(ERotationDirection direction) { ShipRotation_m = direction; }
-	void ReduceHealth() { ShipHealth_m--; }
+	void SetShipRotation(const ERotationDirection direction) { ShipRotation_m = direction; }
+	int ReduceHealth() { return --ShipHealth_m; }
 };
 

@@ -51,11 +51,14 @@ void CGameManager::PlacePlayerShips(int player)
 {
     CGrid& grid = player ? p2Grid : p1Grid;     // TF: Reference
     CBattleship** shipList = player ? p2ShipList : p1ShipList;
+
+    
     
     for (int i = 0; i < 5; i++)
     {
         bool placing = true;
-		
+        grid.PlaceShipRandom(shipList[i], false);
+        
         while (placing)
         {
             grid.PlaceShip(shipList[i], false);
@@ -124,10 +127,10 @@ void CGameManager::PlaceAIShips()
 void CGameManager::DrawGrids()
 {
     system("cls");
-    cout << termcolor::yellow << "Enemy Waters:" << termcolor::reset << endl;
+    cout << termcolor::yellow << "Enemy Waters:       Enemy Pieces Remaining: " << 17 - P1Score_m << termcolor::reset << endl;
     p2Grid.DrawGrid();
     
-    cout << termcolor::yellow << "Your Ships:" << termcolor::reset << endl;
+    cout << termcolor::yellow << "Your Ships:         Your Pieces Remaining: " << 17 - P2Score_m << termcolor::reset << endl;
     p1Grid.DrawGrid();
 
     
@@ -142,23 +145,36 @@ void CGameManager::DoGameLoop()
         Round_m++;
         DrawGrids();
         
-        QueryGrid(p2Grid);
+        P1Score_m += QueryGrid(p2Grid);
 
         DrawGrids();
+
+        if (P1Score_m >= 17)
+        {
+
+            break;
+        }
 
 
         cout << termcolor::red << "Enemy is thinking..." << termcolor::reset << endl;
         Sleep(1000);
         srand(static_cast<unsigned>(time(NULL)));
-        p1Grid.GuessRandom();
+        P2Score_m += p1Grid.GuessRandom();
 
         
         DrawGrids();
 
+        if (P2Score_m >= 17)
+        {
+
+            break;
+        }
     }
+
+    GameOver();
 }
 
-void CGameManager::QueryGrid(CGrid& grid)
+bool CGameManager::QueryGrid(CGrid& grid)
 {
     char xlet;
     int xloc;
@@ -172,5 +188,19 @@ void CGameManager::QueryGrid(CGrid& grid)
     std::cout << "Col: ";
     ValidateInput(yloc);
 
-    grid.CheckLocation(xloc, yloc);
+    return grid.CheckLocation(xloc, yloc);
+}
+
+void CGameManager::GameOver()
+{
+    if (P1Score_m > P2Score_m)
+    {
+        cout << termcolor::green << "Player 1 wins!" << termcolor::reset << endl;
+    }
+    else
+    {
+        cout << termcolor::red << "Player 2 wins!" << termcolor::reset << endl;
+    }
+    system("pause");
+    
 }

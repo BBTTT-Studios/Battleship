@@ -30,10 +30,10 @@ public:
 	};
 
 private:
-	EState State_m;
-	EState OldState_m;
-	CBattleship* OldOwner_m;
-	CBattleship* Owner_m;
+	EState State_m = EState::UNCHECKED;
+	EState OldState_m = EState::UNCHECKED;
+	CBattleship* OldOwner_m = nullptr;
+	CBattleship* Owner_m = nullptr;
 	//Coords Position_m;
 	
 public:

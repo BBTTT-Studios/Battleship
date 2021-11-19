@@ -28,9 +28,11 @@ Mail : Vincent.Gray@mds.ac.nz
 class CGameManager
 {
 public:
-    CGameManager(bool aimode = true);   
+    explicit CGameManager(bool aimode = true);   
     ~CGameManager();
 
+
+    
 private:
     int P1Score_m = 0;  // TF: Variable Type
     int P2Score_m = 0;
@@ -43,14 +45,24 @@ private:
     CBattleship *p1ShipList[5];
     CBattleship *p2ShipList[5];
     
-
+    // Prompts player to move and place their ships
     void PlacePlayerShips(int player = 0);  // TF: Default Parameter
+
+    // Auto places ships on the grid
     void PlaceAIShips();
+    
     void DrawGrids();
+    
     void DoGameLoop();
-    void QueryGrid(CGrid& grid);
+
+    // Prompts player to fire a missile at enemy grid. Returns true if hit
+    bool QueryGrid(CGrid& grid);
+    
     void GameOver();
 
+
+
+    
 public:
     
     template<typename T>

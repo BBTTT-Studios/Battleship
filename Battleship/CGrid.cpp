@@ -24,8 +24,6 @@ Mail : Vincent.Gray@mds.ac.nz
 
 CGrid::CGrid()
 {
-	//std::cout << "Grid Initialized" << std::endl;
-	//DrawGrid();
 
 }
 
@@ -45,7 +43,6 @@ void CGrid::DrawGrid()
 		std::cout << static_cast<char>(65 + row);
 		for (int col = 0; col < 10; col++)
 		{
-			//GridArray_m[row][col].SetPosition(row, col);
 			switch (GridArray_m[row][col].GetState())
 			{
 			case CGridPiece::EState::UNCHECKED:
@@ -69,7 +66,7 @@ void CGrid::DrawGrid()
 				break;
 
 			case CGridPiece::EState::FRIENDLY:
-				std::cout << termcolor::green << " F" << termcolor::reset;
+				std::cout << termcolor::green << " #" << termcolor::reset;
 				break;
 
 			case CGridPiece::EState::OVERLAPPING:
@@ -89,7 +86,7 @@ void CGrid::DrawGrid()
 
 
 
-void CGrid::CheckLocation(const int &row, const int &col)
+bool CGrid::CheckLocation(const int &row, const int &col)
 {
 	CGridPiece& gridPiece = GridArray_m[row - 1][col - 1];
 	switch (gridPiece.GetState())
@@ -97,18 +94,23 @@ void CGrid::CheckLocation(const int &row, const int &col)
 	case CGridPiece::EState::ENEMY:
 		gridPiece.SetState(CGridPiece::EState::HIT);
 		gridPiece.GetOwner()->ReduceHealth();
-		break;
+		return true;
+
 
 	case CGridPiece::EState::FRIENDLY:
 		gridPiece.SetState(CGridPiece::EState::HIT);
 		gridPiece.GetOwner()->ReduceHealth();
-		break;
+		return true;
+
+
+	case CGridPiece::EState::HIT:
+		return false;
 		
 	default:
 		GridArray_m[row - 1][col - 1].SetState(CGridPiece::EState::EMPTY);
-		break;
+		return false;
+
 	}
-	//DrawGrid();
 }
 
 
@@ -122,7 +124,7 @@ void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 			pieces[i]->SetOwner(ship);
 		}
 	
-	//DrawGrid();
+
 }
 
 void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
@@ -142,12 +144,12 @@ void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
 	
 }
 
-void CGrid::GuessRandom()
+bool CGrid::GuessRandom()
 {
 	srand(static_cast<unsigned>(time(NULL)));
 	int row = rand() % 10;
 	int col = rand() % 10;
-	CheckLocation(row, col);
+	return CheckLocation(row, col);
 }
 
 
