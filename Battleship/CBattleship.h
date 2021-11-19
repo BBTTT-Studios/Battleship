@@ -18,7 +18,7 @@ class CBattleship
 {
 public:
 	enum class ERotationDirection { LEFT, RIGHT, UP, DOWN };
-	enum class EShipType { DESTROYER, CRUISER, SUBMARINE, BATTLESHIP, CARRIER };
+	enum class EShipType { CARRIER, BATTLESHIP, SUBMARINE, CRUISER, DESTROYER };
 	struct Coords { int Row; int Col; };
 
 	CBattleship(EShipType, ERotationDirection, int row, int col);

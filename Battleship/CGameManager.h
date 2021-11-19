@@ -37,16 +37,16 @@ private:
     int P1Score_m = 0;  // TF: Variable Type
     int P2Score_m = 0;
     int Round_m = 0;
-    bool continueGame = true;
-    const bool AIMode;  //TF: Constant
+    bool ContinueGame_m = true;
+    const bool AIMode_m;  //TF: Constant
 
-    CGrid p1Grid;   // TF: Class Instance
-    CGrid p2Grid;
-    CBattleship *p1ShipList[5];
-    CBattleship *p2ShipList[5];
+    CGrid P1Grid_m;   // TF: Class Instance
+    CGrid P2Grid_m;
+    CBattleship *P1ShipList_m[5];
+    CBattleship *P2ShipList_m[5];
     
     // Prompts player to move and place their ships
-    void PlacePlayerShips(int player = 0);  // TF: Default Parameter
+    void PlacePlayerShips(const int& player = 0);  // TF: Default Parameter
 
     // Auto places ships on the grid
     void PlaceAIShips();
@@ -56,9 +56,9 @@ private:
     void DoGameLoop();
 
     // Prompts player to fire a missile at enemy grid. Returns true if hit
-    bool QueryGrid(CGrid& grid);
+    static bool QueryGrid(CGrid& grid);
     
-    void GameOver();
+    void GameOver() const;
 
 
 

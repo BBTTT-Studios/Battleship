@@ -15,10 +15,9 @@ Mail : Vincent.Gray@mds.ac.nz
 
 #include "CGrid.h"
 #include <stdlib.h>
-#include <windows.h>
 #include <iostream>
-#include <string>
 #include <vector>
+#include <algorithm>
 #include "termcolor.hpp"
 
 
@@ -34,17 +33,19 @@ CGrid::~CGrid()
 
 }
 
-void CGrid::DrawGrid()
+void CGrid::DrawGrid() const
 {
 	
 	std::cout << termcolor::white << "  1 2 3 4 5 6 7 8 9 10" << termcolor::reset << std::endl;
 	for (int row = 0; row < 10; row++)		// TF: Iteration Structure
 	{
 		std::cout << static_cast<char>(65 + row);
+		
 		for (int col = 0; col < 10; col++)
 		{
 			switch (GridArray_m[row][col].GetState())
 			{
+				
 			case CGridPiece::EState::UNCHECKED:
 				std::cout << termcolor::bright_blue << " ." << termcolor::reset;
 				break;
@@ -117,7 +118,7 @@ bool CGrid::CheckLocation(const int &row, const int &col)
 //TODO Disallow ships to be placed on top of other ships
 void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 {
-		std::vector<CGridPiece*> pieces = GetShipPieces(ship);
+	const std::vector<CGridPiece*> pieces = GetShipPieces(ship);
 		for (int i = 0; i < pieces.size(); i++)
 		{
 			pieces[i]->SetState(isEnemy ? CGridPiece::EState::ENEMY : CGridPiece::EState::FRIENDLY);		// TF: Pointer Dereferenced
@@ -127,14 +128,14 @@ void CGrid::PlaceShip(CBattleship* ship, const bool isEnemy)
 
 }
 
-void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
+void CGrid::PlaceShipRandom(CBattleship* ship, const bool isEnemy)
 {
 	bool placed = false;
 	while (!placed)
 	{
-		srand(static_cast<unsigned>(time(NULL)));
-		CBattleship::ERotationDirection Direction = static_cast<CBattleship::ERotationDirection>(rand() % 4);
-		ship->SetShipRotation(Direction);
+		srand(static_cast<unsigned>(time(nullptr)));
+		CBattleship::ERotationDirection direction = static_cast<CBattleship::ERotationDirection>(rand() % 4);
+		ship->SetShipRotation(direction);
 		int row = rand() % 10;		// TF: Pseudo Random Number
 		int col = rand() % 10;
 		
@@ -146,10 +147,16 @@ void CGrid::PlaceShipRandom(CBattleship* ship, bool isEnemy)
 
 bool CGrid::GuessRandom()
 {
-	srand(static_cast<unsigned>(time(NULL)));
-	int row = rand() % 10;
-	int col = rand() % 10;
-	return CheckLocation(row, col);
+	while (true)
+	{
+		srand(static_cast<unsigned>(time(nullptr)));
+		const int row = rand() % 10;
+		const int col = rand() % 10;
+		if (GridArray_m[row - 1][col - 1].GetState() != CGridPiece::EState::EMPTY && GridArray_m[row - 1][col - 1].GetState() != CGridPiece::EState::HIT)
+		{
+			return CheckLocation(row, col);
+		}
+	}
 }
 
 
@@ -184,14 +191,8 @@ std::vector<CGridPiece*> CGrid::GetShipPieces(const CBattleship* ship)
 
 
 //TODO Pass over ships instead of being blocked by them
-bool CGrid::MoveShip(CBattleship* ship, const int row, const int col)
+bool CGrid::MoveShip(CBattleship* ship, const int& row, const int& col)
 {
-
-	bool canMove = false;
-
-	const std::vector<CGridPiece*>& shipParts = GetShipPieces(ship);
-
-	
 	for (int r = 0; r < 10; r++)
 	{
 		for (int c = 0; c < 10; c++)
@@ -213,18 +214,16 @@ bool CGrid::MoveShip(CBattleship* ship, const int row, const int col)
 		return true;
 	}
 	return false;
-	
-	//DrawGrid();
 }
 
 
 
-bool CGrid::CheckMovementValidity(int row, int col, CBattleship* ship)
+bool CGrid::CheckMovementValidity(const int& row, const int& col, CBattleship* ship)
 {
 	bool canMove = false;
 	int colTest = 0;
 	int rowTest = 0;
-	int len = ship->GetShipLength();
+	const int len = ship->GetShipLength();
 	for (int i = 0; i < len; i++)
 	{
 		
@@ -276,7 +275,7 @@ bool CGrid::CheckMovementValidity(int row, int col, CBattleship* ship)
 
 void CGrid::RotateShip(CBattleship* ship)
 {
-	CBattleship::ERotationDirection OldRotation = ship->GetRotation();
+	const CBattleship::ERotationDirection oldRotation = ship->GetRotation();
 	switch (ship->GetRotation())
 	{
 	case CBattleship::ERotationDirection::RIGHT: ship->SetShipRotation(CBattleship::ERotationDirection::DOWN); break;
@@ -286,6 +285,6 @@ void CGrid::RotateShip(CBattleship* ship)
 	}
 	if (!CheckMovementValidity(ship->GetShipLocation().Row, ship->GetShipLocation().Col, ship))
 	{
-		ship->SetShipRotation(OldRotation);
+		ship->SetShipRotation(oldRotation);
 	}
 }

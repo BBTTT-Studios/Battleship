@@ -40,8 +40,6 @@ static T& ValidateInput(T& val)
 }
 
 
-
-//MAIN GAME FUNCTION
 int main()
 {
 	while (true)
@@ -62,13 +60,13 @@ int main()
 		{
 		case 1:
 			{
-				CGameManager GameManager(true);
+				CGameManager gameManager(true);
 			}
 			break;
 
 		case 2:
 			{
-				CGameManager GameManager(false);
+				CGameManager gameManager(false);
 			}
 			break;
 
